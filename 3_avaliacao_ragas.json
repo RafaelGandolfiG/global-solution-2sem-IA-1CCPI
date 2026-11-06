@@ -1,0 +1,134 @@
+{
+    "projeto": "CitizenTech ColetAr",
+    "modelo": "gemma4:cloud",
+    "embedding": "nomic-embed-text",
+    "total_perguntas": 8,
+    "resultados": [
+        {
+            "pergunta_id": 1,
+            "nivel": "simples",
+            "pergunta": "Como devo armazenar o óleo usado?",
+            "ground_truth": "O óleo deve estar frio e acondicionado em uma garrafa plástica limpa, seca, resistente e bem fechada.",
+            "resposta": "O óleo deve estar frio e acondicionado em garrafa plástica que seja limpa, seca, resistente e bem fechada (DOC-01).",
+            "fontes": [
+                "DOC-01",
+                "DOC-02"
+            ],
+            "faithfulness": 1.0,
+            "answer_relevancy": 0.7257695898271664,
+            "context_precision": 0.9999999999,
+            "context_recall": 1.0
+        },
+        {
+            "pergunta_id": 2,
+            "nivel": "simples",
+            "pergunta": "Qual o limite de litros por visita?",
+            "ground_truth": "O limite permitido é de 5 litros de óleo por morador por visita, conforme o DOC-01.",
+            "resposta": "O limite de entrega é de 5 litros por morador por visita (DOC-01, DOC-02).",
+            "fontes": [
+                "DOC-02",
+                "DOC-01"
+            ],
+            "faithfulness": 1.0,
+            "answer_relevancy": 0.8057576853395824,
+            "context_precision": 0.99999999995,
+            "context_recall": 1.0
+        },
+        {
+            "pergunta_id": 3,
+            "nivel": "simples",
+            "pergunta": "A entrega de óleo é gratuita?",
+            "ground_truth": "Sim. A entrega de óleo de cozinha usado no Programa ColetAr é gratuita, conforme o Art. 1º do DOC-01 e o item 4 do DOC-02.",
+            "resposta": "Sim, a entrega de óleo é gratuita (DOC-01, DOC-02).",
+            "fontes": [
+                "DOC-01",
+                "DOC-02"
+            ],
+            "faithfulness": 1.0,
+            "answer_relevancy": 1.0000000000000002,
+            "context_precision": 0.99999999995,
+            "context_recall": 1.0
+        },
+        {
+            "pergunta_id": 4,
+            "nivel": "simples",
+            "pergunta": "Onde fica o ponto CA-101?",
+            "ground_truth": "O ponto CA-101 fica no Centro Comunitário Ipê, Rua das Palmeiras, 120, Bairro Centro, no município fictício de Vila Aurora.",
+            "resposta": "O ponto CA-101 fica no Centro Comunitário Ipê, Rua das Palmeiras, 120, Bairro Centro (DOC-01, DOC-02).",
+            "fontes": [
+                "DOC-02",
+                "DOC-01"
+            ],
+            "faithfulness": 1.0,
+            "answer_relevancy": 1.0000000000000002,
+            "context_precision": 0.99999999995,
+            "context_recall": 0.0
+        },
+        {
+            "pergunta_id": 5,
+            "nivel": "armadilha",
+            "pergunta": "O ponto CA-102 está funcionando?",
+            "ground_truth": "Não. O ponto CA-102, localizado na Biblioteca Jardim do Sol, está interditado por tempo indeterminado, conforme a atualização do DOC-02.",
+            "resposta": "Não, o Ponto CA-102, localizado na Biblioteca Jardim do Sol, está temporariamente interditado para recebimento de óleo usado devido a manutenção das instalações, não havendo data confirmada para reabertura (DOC-02).",
+            "fontes": [
+                "DOC-02",
+                "DOC-01"
+            ],
+            "faithfulness": 1.0,
+            "answer_relevancy": 0.7558641338596286,
+            "context_precision": 0.9999999999,
+            "context_recall": 1.0
+        },
+        {
+            "pergunta_id": 6,
+            "nivel": "armadilha",
+            "pergunta": "Posso entregar óleo no CA-101 às 16h30?",
+            "ground_truth": "Não. Conforme o DOC-02, o ponto CA-101 funciona de segunda a sexta-feira, das 9h às 16h. Portanto, às 16h30 o atendimento já terminou.",
+            "resposta": "Não, você não pode entregar óleo no CA-101 às 16h30, pois o horário de atendimento deste ponto é de segunda a sexta-feira, das 9h às 16h (DOC-02).",
+            "fontes": [
+                "DOC-02",
+                "DOC-01"
+            ],
+            "faithfulness": 1.0,
+            "answer_relevancy": 0.9999999999999999,
+            "context_precision": 0.9999999999,
+            "context_recall": 1.0
+        },
+        {
+            "pergunta_id": 7,
+            "nivel": "armadilha",
+            "pergunta": "O CA-103 recebe óleo aos sábados às 16h?",
+            "ground_truth": "Não. Embora o ponto CA-103 funcione aos sábados, o recebimento de óleo termina às 14h nesse dia, conforme o DOC-02.",
+            "resposta": "Não, o Ponto CA-103 não recebe óleo aos sábados às 16h, pois, embora funcione de segunda a sábado, o recebimento de óleo encerra às 14h aos sábados (DOC-02).",
+            "fontes": [
+                "DOC-02",
+                "DOC-01"
+            ],
+            "faithfulness": 1.0,
+            "answer_relevancy": 0.9744470384405991,
+            "context_precision": 0.9999999999,
+            "context_recall": 1.0
+        },
+        {
+            "pergunta_id": 8,
+            "nivel": "armadilha",
+            "pergunta": "Posso utilizar a entrada acessível do CA-102?",
+            "ground_truth": "Não para realizar uma entrega de óleo. Embora o DOC-01 informe a existência de uma entrada acessível no CA-102, o DOC-02 informa que o ponto está interditado por tempo indeterminado.",
+            "resposta": "Não, você não deve se dirigir ao CA-102, pois o ponto está temporariamente interditado para recebimento de óleo usado devido à manutenção das instalações (DOC-02).",
+            "fontes": [
+                "DOC-01",
+                "DOC-02"
+            ],
+            "faithfulness": 1.0,
+            "answer_relevancy": 0.8085482977631759,
+            "context_precision": 0.9999999999666667,
+            "context_recall": 1.0
+        }
+    ],
+    "medias": {
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8837983431537692,
+        "context_precision": 0.9999999999270833,
+        "context_recall": 0.875
+    }
+}
