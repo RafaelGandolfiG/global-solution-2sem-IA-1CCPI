@@ -1,0 +1,93 @@
+GLOBAL SOLUTION 2026.2 — PROMPT AND ARTIFICIAL INTELLIGENCE
+
+ENTREGÁVEL 6 — REGISTRO DE UTILIZAÇÃO DE INTELIGÊNCIA ARTIFICIAL
+
+Projeto: CitizenTech ColetAr
+Turma: 1CCPI
+
+INTEGRANTES
+- Rafael Gandolfi Gonçalves — RM 569036
+- Guilherme Miranda — RM 573107
+- Carlos Eduardo — RM 572949
+
+1. OBJETIVO
+
+Registrar a utilização do ChatGPT como ferramenta de apoio ao planejamento, desenvolvimento, depuração, documentação e validação do sistema CitizenTech ColetAr.
+
+2. REGISTRO DE INTERAÇÕES
+
+Interação 01 — Estruturação do projeto
+
+Solicitação: Organizar a solução conforme os requisitos da Global Solution 2026.2.
+
+Apoio da IA: Orientações para estruturar o notebook nas nove seções exigidas e organizar os entregáveis.
+
+Decisão: Desenvolver a solução no Jupyter Notebook, com execução reproduzível no Google Colab.
+
+Interação 02 — Base documental
+
+Solicitação: Desenvolver uma base de conhecimento fictícia para o programa de coleta de óleo ColetAr.
+
+Apoio da IA: Orientações para a organização dos documentos DOC-01 e DOC-02, incluindo informações atualizadas e contraditórias.
+
+Decisão: Utilizar os dois documentos para avaliar a capacidade do RAG de recuperar informações atualizadas.
+
+Interação 03 — Pipeline RAG
+
+Solicitação: Implementar recuperação documental utilizando embeddings e ChromaDB.
+
+Apoio da IA: Explicações e sugestões de código para chunking, indexação vetorial, recuperação semântica e reranking.
+
+Decisão: Utilizar embeddings nomic-embed-text e priorizar evidências documentais relevantes nas respostas.
+
+Interação 04 — Agente com ferramentas
+
+Solicitação: Implementar ferramentas para consultar pontos de coleta e calcular horários.
+
+Apoio da IA: Orientações para integrar ferramentas ao agente e registrar seu funcionamento.
+
+Decisão: Utilizar ferramentas específicas para consultas operacionais e limitar a quantidade de chamadas.
+
+Interação 05 — Segurança
+
+Solicitação: Implementar mecanismos de proteção para o assistente.
+
+Apoio da IA: Sugestões para validação de escopo, proteção contra prompt injection, privacidade e respostas sem evidências suficientes.
+
+Decisão: Implementar e testar quatro guardrails no notebook.
+
+Interação 06 — Avaliação com RAGAS
+
+Solicitação: Avaliar a qualidade das respostas do sistema.
+
+Apoio da IA: Orientações para preparar oito perguntas de avaliação, organizar as referências e executar as métricas Faithfulness, Answer Relevancy, Context Precision e Context Recall.
+
+Decisão: Executar a avaliação e exportar os resultados para 3_avaliacao_ragas.json.
+
+Interação 07 — Compatibilidade com Google Colab
+
+Solicitação: Garantir que o notebook funcione pela opção Runtime → Run all.
+
+Apoio da IA: Orientações para corrigir a ordem das células, instalar dependências, inicializar o Ollama e resolver incompatibilidades de importação do RAGAS.
+
+Decisão: Corrigir o notebook e validar sua execução completa em uma sessão reiniciada do Google Colab.
+
+Interação 08 — Segurança das credenciais
+
+Solicitação: Evitar exposição da chave de API utilizada pelo projeto.
+
+Apoio da IA: Orientações para utilizar Secrets no Colab, substituir a chave exposta, remover o arquivo .env do repositório público e criar um .gitignore.
+
+Decisão: Utilizar OLLAMA_API_KEY nos Secrets e não incluir credenciais no material de entrega.
+
+3. RESPONSABILIDADE DA EQUIPE
+
+A inteligência artificial foi utilizada como ferramenta de apoio técnico. A equipe permaneceu responsável pela revisão do código, execução dos testes, análise das respostas, conferência dos resultados e entrega final do projeto.
+
+4. FERRAMENTA UTILIZADA
+
+ChatGPT — OpenAI.
+
+5. CONCLUSÃO
+
+O uso da inteligência artificial auxiliou na implementação, resolução de erros e documentação do CitizenTech ColetAr. O funcionamento do projeto foi validado por meio de testes do pipeline RAG, agente, interface, guardrails, avaliação RAGAS e execução completa do notebook no Google Colab.
