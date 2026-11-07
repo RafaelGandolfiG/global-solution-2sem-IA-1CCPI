@@ -30,14 +30,15 @@ interditado, conforme o comunicado atualizado DOC-02,
 e apresenta a fonte documental utilizada.
 
 3. LINKS
-Link do notebook / Google Colab:
-[PREENCHER APÓS PUBLICAÇÃO E TESTE RUN ALL]
 
-Link do repositório do projeto (se houver):
-[PREENCHER]
+Link do notebook no Google Colab:
+https://colab.research.google.com/drive/1hS2vI2HpK3p0J6B3Yzq-GqjK_4mkrSo9?usp=sharing
 
-Link da tela final ou da pasta de evidências (se houver):
-[PREENCHER]
+Link do repositório GitHub:
+https://github.com/RafaelGandolfiG/global-solution-2sem-IA-1CCPI
+
+Link da tela final ou evidências:
+https://github.com/RafaelGandolfiG/global-solution-2sem-IA-1CCPI/blob/main/print_interface_gradio.png
 
 4. CONFERÊNCIA DA EQUIPE
 [ ] A tela final foi obtida de uma execução real.
