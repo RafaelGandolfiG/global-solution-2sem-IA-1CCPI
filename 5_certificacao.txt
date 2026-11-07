@@ -41,10 +41,10 @@ Link da tela final ou evidências:
 https://github.com/RafaelGandolfiG/global-solution-2sem-IA-1CCPI/blob/main/print_interface_gradio.png
 
 4. CONFERÊNCIA DA EQUIPE
-[ ] A tela final foi obtida de uma execução real.
-[ ] Os links foram testados e possuem permissão de visualização.
-[ ] Todos os nomes e RMs foram conferidos.
-[ ] Nenhum link ou captura expõe OLLAMA_API_KEY ou outras credenciais.
+[x] A tela final foi obtida de uma execução real.
+[x] Os links foram testados e possuem permissão de visualização.
+[x] Todos os nomes e RMs foram conferidos.
+[x] Nenhum link ou captura expõe OLLAMA_API_KEY ou outras credenciais.
 
 OBSERVAÇÃO
 Este arquivo é um modelo de preenchimento. Os campos entre colchetes

@@ -1,17 +1,25 @@
 # CitizenTech ColetAr — Global Solution 2026.2
 
-**Curso:** Ciência da Computação — FIAP  
-**Turma:** 1CCPI  
+**FIAP — Ciência da Computação | Turma 1CCPI**  
 **Disciplina:** Prompt and Artificial Intelligence  
-**Frente:** B — Descarte e Sustentabilidade  
-**Projeto:** CitizenTech ColetAr  
-**Integrantes e RMs:** preencher e conferir com a equipe antes da entrega.
+**Professor:** Jorge Luiz Gomes  
+**Tema:** CitizenTech — Frente B: Descarte e Sustentabilidade
 
-> **Aviso:** Vila Aurora, seus documentos e seus pontos de coleta são fictícios, criados para fins acadêmicos. O sistema não representa um serviço público real.
+## Integrantes
+
+| Integrante | RM | Turma |
+|---|---|---|
+| Rafael Gandolfi Gonçalves | 569036 | 1CCPI |
+| Guilherme Miranda | 573107 | 1CCPI |
+| Carlos Eduardo | 572949 | 1CCPI |
+
+> **Aviso:** o município de Vila Aurora, o Programa ColetAr, os documentos e os pontos de coleta são fictícios, utilizados exclusivamente para fins acadêmicos. Não representam um serviço público real.
 
 ## 1. Objetivo
 
-Desenvolver um assistente de IA generativa para consultas sobre o descarte de óleo de cozinha usado: acondicionamento, limite de entrega, gratuidade, localização dos pontos, horários e interdições. As respostas documentais utilizam RAG e identificam as fontes; um agente consulta o status dos pontos e calcula o próximo horário de atendimento.
+Desenvolver um assistente de IA generativa que auxilie cidadãos a consultar regras de descarte de óleo de cozinha usado, endereços, horários, limites de entrega e interdições de pontos de coleta. A solução utiliza **RAG** para responder com base em fontes documentais, um **agente com ferramentas** para consultas operacionais e uma **avaliação RAGAS** para medir a qualidade das respostas.
+
+A principal exigência de confiabilidade é reconhecer que **um documento posterior pode substituir informações de um documento anterior**, sem inventar fatos quando a base não responde à pergunta.
 
 ## 2. Arquitetura
 
@@ -19,116 +27,158 @@ Desenvolver um assistente de IA generativa para consultas sobre o descarte de ó
 flowchart TD
     U[Usuário] --> G[Interface Gradio]
     G --> S[Guardrails de entrada]
-    S --> R{Roteamento da consulta}
-    R -->|Perguntas documentais| Q[Retriever ChromaDB + reranking]
-    Q --> C[Contexto com metadados e proteção contra injection]
-    C --> P[Prompt RAG / LCEL]
+    S --> R{Tipo de pergunta}
+    R -->|Consulta documental| Q[Retriever ChromaDB + reranking]
+    Q --> C[Chunks com metadados e filtro de injection]
+    C --> P[Prompt RAG em LCEL]
     P --> L[Gemma via Ollama Cloud]
-    R -->|Status ou próximo horário| A[Agente com ferramentas]
+    R -->|Status ou horários| A[Agente com ferramentas]
     A --> T1[consultar_status_ponto]
     A --> T2[calcular_proximo_horario]
     T1 --> L
     T2 --> L
     L --> G
-    D[DOC-01 e DOC-02] --> K[Chunking]
-    K --> E[nomic-embed-text / Ollama local]
+    D[DOC-01 + DOC-02] --> K[Chunking]
+    K --> E[Ollama local: nomic-embed-text]
     E --> V[ChromaDB]
     V --> Q
 ```
 
-O histórico de mensagens é exibido na interface; ele ainda não é enviado integralmente ao modelo como memória conversacional.
+### Tecnologias
 
-## 3. Tecnologias
+- **Python / Google Colab:** implementação em notebook executável.
+- **LangChain e LCEL:** composição do pipeline RAG e integração com modelos e ferramentas.
+- **ChromaDB:** índice vetorial dos trechos documentais, com metadados.
+- **Ollama local + `nomic-embed-text`:** geração de embeddings.
+- **Ollama Cloud + `gemma4:cloud`:** modelo de linguagem para respostas, agente e avaliação.
+- **Gradio:** interface de perguntas e respostas, incluindo histórico visual e fontes.
+- **RAGAS 0.4.3:** avaliação quantitativa de respostas e contexto recuperado.
 
-- **Python e Jupyter Notebook:** implementação e execução dos experimentos.
-- **LangChain / LCEL:** composição da cadeia RAG e ferramentas do agente.
-- **Gemma (`gemma4:cloud`) via Ollama Cloud:** geração de respostas e avaliação como LLM juiz.
-- **Ollama local + `nomic-embed-text`:** geração de embeddings em `http://localhost:11434`.
-- **ChromaDB:** armazenamento vetorial persistente na pasta `chroma_db`.
-- **Gradio:** interface de conversação.
-- **RAGAS:** avaliação de Faithfulness, Answer Relevancy, Context Precision e Context Recall.
+## 3. Base documental e contradição deliberada
 
-## 4. Base documental e tratamento de contradições
+A base contém **dois documentos originais e fictícios**, com mais de 100 palavras cada, armazenados em `2_base_documental/`:
 
-Os documentos originais estão em `2_base_documental/`:
-
-| Documento | Data | Conteúdo |
+| Documento | Publicação | Função |
 |---|---|---|
-| `doc_01_regulamento_coletar.txt` (`DOC-01`) | 10/08/2026 | Regras originais de acondicionamento, gratuidade, limite de 5 litros, endereços e horários dos pontos. |
-| `doc_02_comunicado_atualizacao.txt` (`DOC-02`) | 20/10/2026 | Atualizações válidas a partir de 21/10/2026: interdição do CA-102; CA-101 até 16h; recebimento de óleo no CA-103 aos sábados até 14h. |
+| `doc_01_regulamento_coletar.txt` — **DOC-01** | 10/08/2026 | Regulamento inicial: condições de entrega, gratuidade, limite de 5 litros por morador por visita, localização e horário dos pontos. |
+| `doc_02_comunicado_atualizacao.txt` — **DOC-02** | 20/10/2026 | Comunicado posterior que atualiza situações operacionais e horários. |
 
-O pipeline compara duas configurações de chunking, **500 caracteres com overlap 50** e **1000 caracteres com overlap 100**, e utiliza a configuração de 500/50 no índice principal. Os chunks preservam metadados como `doc_id`, `titulo`, `data_publicacao` e `tema`.
+**Armadilha documental:** o DOC-01 contém informações posteriormente desatualizadas. O DOC-02 informa que o ponto **CA-102 está interditado**, que o **CA-101 atende de segunda a sexta, das 9h às 16h**, e que o recebimento no **CA-103 aos sábados se encerra às 14h**, ainda que o estabelecimento possa permanecer aberto por mais tempo. O sistema deve dar precedência às informações operacionais atualizadas, citando o documento correspondente.
 
-Quando há incompatibilidade, as informações mais recentes do `DOC-02` prevalecem sobre o `DOC-01`. A recuperação combina similaridade semântica com reranking lexical, correspondência de códigos de pontos e data como critério de desempate.
+As perguntas sobre bairros ou locais não mencionados na base devem resultar em uma resposta de **informação não encontrada**, sem inventar endereços.
 
-## 5. Agente e ferramentas
+## 4. Chunking, embeddings e recuperação
 
-- **`consultar_status_ponto(id_ponto)`:** consulta situação operacional, nome e fonte documental de um ponto; trata IDs inválidos.
-- **`calcular_proximo_horario(id_ponto, data_hora)`:** calcula a próxima janela de atendimento, respeitando dias da semana, horários atualizados e interdições; trata entradas inválidas.
+Foram comparadas duas configurações de `RecursiveCharacterTextSplitter`:
 
-O agente registra `ACTION`, argumentos e `OBSERVATION`, e possui limite de **6 chamadas de ferramenta por pergunta**.
+| Estratégia | `chunk_size` | `chunk_overlap` | Avaliação técnica |
+|---|---:|---:|---|
+| A | 500 | 50 | Trechos menores, mais específicos para horários, IDs e mudanças pontuais. |
+| B | 1000 | 100 | Trechos maiores preservam contexto, mas podem misturar informações de diferentes regras. |
 
-## 6. Segurança
+Foi escolhida a configuração **500/50** para o índice principal, buscando maior precisão em consultas curtas sobre pontos de coleta. A escolha é uma decisão de projeto, não uma prova de superioridade universal: os resultados dependem do corpus e das perguntas.
 
-Foram implementados quatro guardrails: (1) escopo temático; (2) filtragem de padrões de prompt injection no conteúdo documental; (3) proteção contra pedidos de dados pessoais; e (4) respostas sem invenção quando falta evidência. Foram realizados testes básicos para cada caso. Essas proteções são parciais e não representam garantia completa contra ataques ou pedidos indiretos.
+Os chunks preservam informações como `doc_id`, `titulo`, `data_publicacao` e `tema`. A recuperação combina busca semântica e **reranking lexical**, com atenção a identificadores de pontos, termos da consulta e atualizações documentais. Os trechos recuperados são passados ao modelo com identificação de fonte para permitir a citação na resposta.
 
-## 7. Execução local (VS Code / Jupyter)
+## 5. Pipeline RAG com contexto
 
-**Pré-requisitos:** Python 3.12 ou ambiente compatível, Jupyter, Ollama instalado e acesso autorizado à Ollama Cloud. Os modelos e dependências podem exigir downloads e conexão à internet.
+A cadeia utiliza a composição **retriever → contexto documental → prompt → ChatOllama → parser**, construída com LCEL. O prompt orienta o modelo a usar exclusivamente as evidências fornecidas e a indicar quando não encontra informação suficiente.
 
-1. Mantenha o notebook `1_Notebook_GS2026_2.ipynb` e a pasta `2_base_documental/` no mesmo diretório de trabalho.
-2. Instale as dependências Python:
+**Casos demonstrados no notebook:**
 
-   ```bash
-   pip install langchain-core langchain-text-splitters langchain-ollama langchain-chroma langchain-community chromadb gradio ragas==0.4.3 python-dotenv pandas jupyter
-   ```
+1. **CA-102:** deve responder que o ponto está interditado e atribuir a atualização ao DOC-02.
+2. **CA-101:** deve empregar o horário atualizado de segunda a sexta, **9h–16h**.
+3. **Bela Vista:** deve reconhecer que a base não fornece um ponto confirmado nesse bairro, em vez de inventar um.
 
-3. Inicie o Ollama local e baixe o modelo de embeddings:
+## 6. Agente e ferramentas
 
-   ```bash
-   ollama pull nomic-embed-text
-   ```
+O agente pode decidir consultar ferramentas quando a pergunta exige uma informação operacional ou um cálculo:
 
-   Confirme que o Ollama responde em `http://localhost:11434` antes de executar o notebook.
-4. Crie um arquivo `.env` local, **não incluído no ZIP**, com a variável:
+- **`consultar_status_ponto(id_ponto)`**: retorna a situação de um ponto conhecido, considerando atualizações documentais e IDs inválidos.
+- **`calcular_proximo_horario(id_ponto, data_hora)`**: calcula uma próxima janela de atendimento a partir dos dias e horários cadastrados, considerando eventuais interdições e entradas inválidas.
 
-   ```dotenv
-   OLLAMA_API_KEY=SUA_CHAVE_PRIVADA
-   ```
+As chamadas geram um **trace** de ações, argumentos e observações, para demonstrar que a ferramenta foi realmente utilizada. O fluxo limita o número de chamadas a **seis por pergunta**, evitando laços indefinidos.
 
-5. Abra o notebook, selecione o ambiente Python apropriado e execute as células em ordem. A interface Gradio local utiliza `share=False`; quando iniciada, abra o endereço exibido no terminal/célula.
-6. A avaliação RAGAS realiza chamadas ao LLM e pode levar mais tempo que as demais seções. Ao final, o notebook gera `3_avaliacao_ragas.json`.
+## 7. Interface e segurança
 
-**Segurança:** nunca inclua `.env`, tokens, chaves de API ou dados pessoais no ZIP ou nos prints.
+A interface **Gradio** oferece um chat com histórico visual, exemplos de perguntas e respostas com indicação de fontes. O notebook demonstra a interface e a integração do RAG e das ferramentas.
 
-### Observação sobre Google Colab
+Foram implementados e testados **quatro guardrails**:
 
-O notebook procura `OLLAMA_API_KEY` nas Secrets do Colab quando ela não está no `.env`. **Entretanto, a etapa de embeddings está configurada para Ollama local em `localhost:11434`: isso não fica disponível automaticamente em uma sessão Colab.** Antes de declarar compatibilidade com `Runtime → Run all`, será necessário adaptar a instalação/inicialização do modelo de embeddings no ambiente Colab e testar a execução integral nesse ambiente. A execução completa no Colab não foi validada neste README.
+1. **Escopo:** tratamento de perguntas fora do tema do Programa ColetAr.
+2. **Prompt injection:** filtragem de instruções suspeitas no material documental.
+3. **Privacidade / LGPD:** bloqueio de solicitações sensíveis incompatíveis com a finalidade do assistente.
+4. **Ausência de evidência:** orientação para não inventar respostas quando os documentos não oferecem suporte.
 
-## 8. Avaliação RAGAS
+Esses controles são mecanismos de redução de risco e **não garantem proteção completa** contra todas as formas de ataque ou alucinação.
 
-O conjunto de avaliação contém **8 perguntas**, sendo **4 simples** e **4 envolvendo atualizações/contradições**. As respostas de referência devem ser revisadas e aprovadas pelo grupo, conforme a exigência de autoria humana do ground truth.
+**Evidência da interface:** [captura do Gradio com resposta sobre o CA-102](https://github.com/RafaelGandolfiG/global-solution-2sem-IA-1CCPI/blob/main/print_interface_gradio.png).
 
-Resultados informados pela última execução do projeto:
+## 8. Como executar no Google Colab
 
-| Métrica | Média |
-|---|---:|
-| Faithfulness | 1,0000 |
-| Answer Relevancy | 0,8838 |
-| Context Precision | 1,0000 |
-| Context Recall | 0,8750 |
+**Notebook compartilhado:** [Abrir no Google Colab](https://colab.research.google.com/drive/1hS2vI2HpK3p0J6B3Yzq-GqjK_4mkrSo9?usp=sharing).
 
-As métricas representam apenas esse conjunto de oito perguntas. O Context Recall da pergunta sobre a localização do CA-101 foi **0,0**, apesar de a resposta e o endereço estarem presentes nos documentos consultados; essa divergência deve ser registrada como limitação da avaliação. As notas não foram alteradas manualmente.
+**Repositório:** [GitHub — CitizenTech ColetAr](https://github.com/RafaelGandolfiG/global-solution-2sem-IA-1CCPI).
 
-## 9. Decisões técnicas e limitações
+### Pré-requisitos
 
-**Decisões:** base documental pequena e auditável; metadados para rastreabilidade; prioridade das atualizações; ChromaDB local; combinação de busca semântica e reranking lexical; uso de ferramentas para cálculos e consultas operacionais; avaliação com RAGAS e análise dos casos de falha.
+- Conta Google com acesso ao Colab e conexão à internet.
+- Chave pessoal válida da **Ollama Cloud**, autorizada para o modelo utilizado.
+- Permissão para executar comandos de instalação e iniciar o Ollama no runtime do Colab.
 
-**Limitações:** documentos e locais fictícios; poucas perguntas de avaliação; dependência de serviços/modelos Ollama; reranking heurístico; filtros de segurança baseados parcialmente em padrões; histórico visual sem memória conversacional integral; inconsistências possíveis do modelo juiz; configuração do Colab ainda dependente de adaptação dos embeddings locais.
+### Procedimento
 
-## 10. Evidências e arquivos de entrega
+1. Abra a cópia atualizada do notebook no Google Colab.
+2. Abra o menu **Secrets** (ícone de chave, na barra lateral).
+3. Crie o Secret **`OLLAMA_API_KEY`** e configure o valor da **sua própria chave**, autorizando o acesso do notebook.
+4. Em **Ambiente de execução**, inicie uma sessão Python e selecione **Executar tudo (Run all)**.
+5. As células iniciais instalam as bibliotecas, instalam/iniciam o Ollama local, baixam `nomic-embed-text`, clonam o repositório para obter `2_base_documental/` e testam a conexão com o modelo remoto.
+6. O notebook carrega os documentos, recria o índice ChromaDB, demonstra o RAG, agente, interface, guardrails e executa as oito avaliações RAGAS.
+7. Ao término, confira a Seção 7 e o arquivo `3_avaliacao_ragas.json` gerado no ambiente de execução.
 
-Organização prevista:
+**Validação realizada:** a equipe executou **Reiniciar sessão → Executar tudo** no Google Colab e relatou conclusão sem erros em todas as seções. Esse teste confirma o funcionamento no ambiente utilizado, mas versões futuras de bibliotecas, disponibilidade dos serviços ou limites do Colab podem exigir novos ajustes.
+
+**Dependências relevantes:** `ragas==0.4.3` e `langchain-community==0.3.31`. Essas versões foram utilizadas para contornar uma incompatibilidade de importação observada durante os testes.
+
+**Segurança:** nunca coloque a chave diretamente nas células, em capturas, no README, no arquivo `.env.example` ou no GitHub. O arquivo `.env` real não deve ser versionado. Cada avaliador deverá usar a própria chave nos Secrets.
+
+**Persistência:** a pasta `/content` do Colab é temporária. O índice vetorial pode ser recriado a partir dos documentos, mas o JSON gerado pelo teste precisa ser baixado ou copiado ao repositório para persistir.
+
+## 9. Avaliação RAGAS
+
+O conjunto possui **oito perguntas**: quatro simples e quatro relacionadas a atualizações ou contradições dos documentos. As respostas de referência (`ground_truth`) devem ser **revisadas e assumidas pela equipe como elaboração própria**, conforme a regra de autoria da disciplina.
+
+A avaliação utiliza quatro métricas:
+
+- **Faithfulness:** verifica se as afirmações da resposta são sustentadas pelo contexto recuperado.
+- **Answer Relevancy:** mede a pertinência da resposta em relação à pergunta.
+- **Context Precision:** avalia a relevância e a ordenação dos trechos recuperados.
+- **Context Recall:** avalia quanto da informação necessária à resposta de referência está presente no contexto.
+
+### Resultados registrados
+
+| Métrica | Arquivo JSON atualmente publicado no GitHub | Última execução no Colab informada pela equipe |
+|---|---:|---:|
+| Faithfulness | 1,0000 | 0,9688 |
+| Answer Relevancy | 0,8838 | 0,9031 |
+| Context Precision | 1,0000 | 1,0000 |
+| Context Recall | 0,8750 | 0,8750 |
+
+**Importante:** os resultados da coluna Colab ainda precisam ser exportados para o `3_avaliacao_ragas.json` definitivo no GitHub, para que README, notebook e JSON se refiram à mesma execução. A avaliação não deve ser editada manualmente para aumentar notas.
+
+**Interpretação:** a precisão de contexto elevada indica que os trechos apresentados ao avaliador foram considerados relevantes. O `Context Recall` de 0,8750 aponta ao menos uma limitação detectada no conjunto; a questão sobre o endereço do CA-101 recebeu avaliação desfavorável de recall, apesar de o dado estar disponível na base, situação que exige análise das evidências e do comportamento do juiz RAGAS. O `Faithfulness` inferior a 1,0 na última execução também indica oportunidade de conferir uma resposta sobre a atualização do CA-102.
+
+As métricas descrevem apenas essas **oito perguntas**; não medem a qualidade universal do assistente. A inclusão de reranking é uma melhoria técnica; um eventual ganho quantitativo deve ser demonstrado comparando execuções controladas, e não presumido.
+
+## 10. Decisões e limitações
+
+**Principais decisões:** documentos curtos, fictícios e auditáveis; contradição intencional entre regulamento e comunicado; chunking menor para regras específicas; metadados de proveniência; reranking; ferramentas para cálculos; quatro guardrails; conjunto reproduzível de oito avaliações.
+
+**Limitações:** corpus reduzido e fictício; execução dependente do Ollama local, da Ollama Cloud e da conectividade; heurísticas de reranking; guardrails sem garantia de cobertura completa; avaliação com amostra pequena e variação do LLM juiz; interface com histórico visual que não equivale necessariamente a uma memória conversacional integral. Para uso real seriam necessárias fontes oficiais atualizadas, governança dos dados, testes ampliados, proteção de dados e infraestrutura de produção.
+
+## 11. Evidências e estrutura da entrega
+
+A organização exigida para o **ZIP final** é:
 
 ```text
 1_Notebook_GS2026_2.ipynb
@@ -142,10 +192,10 @@ Organização prevista:
 7_demo_video_url.txt
 ```
 
-**Capturas recomendadas para inserção no relatório ou pasta de evidências, caso exigidas:** comparação de chunking, consulta ao ChromaDB, resposta RAG citando documentos, trace do agente, interface Gradio com resposta, testes de guardrails e tabela final RAGAS. As capturas devem ser feitas da execução real e não foram incorporadas automaticamente neste arquivo.
+**Evidências relevantes:** comparação de chunking (Seção 1), recuperação ChromaDB e metadados (Seção 2), três respostas com fontes (Seção 3), trace do agente (Seção 4), captura da interface (Seção 5), testes dos guardrails (Seção 6) e tabela RAGAS (Seção 7). Os resultados e capturas devem ser extraídos de execuções reais.
 
-**Pendente de conferência final:** integrantes e RMs, divisão de tarefas, evidências, certificação, log de chat, link do vídeo e execução integral em ambiente de entrega.
+**Pendências para entrega:** substituir o notebook antigo pelo arquivo corrigido com o nome oficial; sincronizar o JSON da última avaliação; conferir as marcações do `5_certificacao.txt`; gravar o vídeo de até três minutos, com apresentação dos integrantes, e preencher `7_demo_video_url.txt`; reunir o ZIP e enviar no Portal FIAP até **19/11/2026 às 23h59**.
 
-## 11. Uso responsável de IA
+## 12. Uso responsável de inteligência artificial
 
-A IA foi utilizada como apoio no planejamento, desenvolvimento, depuração e documentação do protótipo. As decisões finais, a validação das fontes, o conjunto de referências de avaliação e a revisão dos entregáveis são de responsabilidade da equipe.
+O ChatGPT foi utilizado como apoio na organização do projeto, explicação das tecnologias, revisão de código, depuração e documentação. A equipe é responsável por verificar as fontes, revisar os `ground_truths`, compreender as escolhas técnicas e validar os resultados. O registro resumido das interações está em `6_Chat_Log.txt`.
