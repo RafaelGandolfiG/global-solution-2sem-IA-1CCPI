@@ -32,7 +32,7 @@ e apresenta a fonte documental utilizada.
 3. LINKS
 
 Link do notebook no Google Colab:
-https://colab.research.google.com/drive/1hS2vI2HpK3p0J6B3Yzq-GqjK_4mkrSo9?usp=sharing
+https://colab.research.google.com/drive/1HUTStIobPRC3EFMmAryDg_8XVmubnPx7?usp=sharing
 
 Link do repositório GitHub:
 https://github.com/RafaelGandolfiG/global-solution-2sem-IA-1CCPI
@@ -46,7 +46,4 @@ https://github.com/RafaelGandolfiG/global-solution-2sem-IA-1CCPI/blob/main/print
 [x] Todos os nomes e RMs foram conferidos.
 [x] Nenhum link ou captura expõe OLLAMA_API_KEY ou outras credenciais.
 
-OBSERVAÇÃO
-Este arquivo é um modelo de preenchimento. Os campos entre colchetes
-não representam evidências concluídas e devem ser substituídos pelos
-dados e links verdadeiros antes da entrega.
+
