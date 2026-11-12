@@ -15,7 +15,7 @@
                 "DOC-02"
             ],
             "faithfulness": 1.0,
-            "answer_relevancy": 0.7258461305532209,
+            "answer_relevancy": 0.7546422700403334,
             "context_precision": 0.9999999999,
             "context_recall": 1.0
         },
@@ -24,13 +24,13 @@
             "nivel": "simples",
             "pergunta": "Qual o limite de litros por visita?",
             "ground_truth": "O limite permitido é de 5 litros de óleo por morador por visita, conforme o DOC-01.",
-            "resposta": "O limite de entrega é de 5 litros por morador por visita (DOC-01, DOC-02).",
+            "resposta": "O limite é de 5 litros por morador por visita (DOC-01, DOC-02).",
             "fontes": [
                 "DOC-02",
                 "DOC-01"
             ],
             "faithfulness": 1.0,
-            "answer_relevancy": 0.8058127871837213,
+            "answer_relevancy": 0.9443310617885973,
             "context_precision": 0.99999999995,
             "context_recall": 1.0
         },
@@ -99,7 +99,7 @@
             "nivel": "armadilha",
             "pergunta": "O CA-103 recebe óleo aos sábados às 16h?",
             "ground_truth": "Não. Embora o ponto CA-103 funcione aos sábados, o recebimento de óleo termina às 14h nesse dia, conforme o DOC-02.",
-            "resposta": "Não, o Ponto CA-103 não recebe óleo aos sábados às 16h, pois, embora funcione de segunda a sábado, aos sábados o recebimento de óleo encerra às 14h (DOC-02).",
+            "resposta": "Não, o Ponto CA-103 não recebe óleo aos sábados às 16h, pois, embora funcione de segunda a sábado, o recebimento de óleo encerra às 14h aos sábados (DOC-02).",
             "fontes": [
                 "DOC-02",
                 "DOC-01"
@@ -120,14 +120,14 @@
                 "DOC-02"
             ],
             "faithfulness": 1.0,
-            "answer_relevancy": 0.8050386745432863,
+            "answer_relevancy": 0.8085797524076157,
             "context_precision": 0.9999999999666667,
             "context_recall": 1.0
         }
     ],
     "medias": {
         "faithfulness": 0.96875,
-        "answer_relevancy": 0.8833479579519938,
+        "answer_relevancy": 0.9047048944465337,
         "context_precision": 0.9999999999270833,
         "context_recall": 0.875
     }
