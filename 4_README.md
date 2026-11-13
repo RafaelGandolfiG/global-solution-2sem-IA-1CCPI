@@ -190,6 +190,7 @@ Esses mecanismos foram demonstrados por testes no notebook. Eles reduzem riscos,
 - Conexão com a internet;
 - Chave válida da Ollama Cloud;
 - Permissão para configurar os Secrets do notebook.
+- Ollama pago para a api key
 
 ### Instruções
 
